@@ -23,11 +23,12 @@ To that end, please also consider [html-webpack-plugin](https://www.npmjs.com/pa
 In your `webpack.config.js` file the plugin should be instantiated as follows:
 
 ```javascript
-new GulpInjectPlugin(filesOrChunks, options)
+new GulpInjectPlugin(target, assetsOrChunks, options)
 ```
 
 Where:
-* `filesOrChunks` is a `string|RegExp` or `Array.<string|RegExp>` of chunk names and/or files names relative to `output.path`.
+* `target` is the `string` name of a chunk containing a html asset or a html asset relative to `output.path`. It will be edited in place.
+* `assetsOrChunks` is a single `string|RegExp` or `Array.<string|RegExp>` list of chunk names and/or asset names relative to `output.path`.
 * `options` is an optional hash `object` of options per the [Gulp Inject API](https://www.npmjs.com/package/gulp-inject#api).
 
 In full this would look like the following:
@@ -61,7 +62,7 @@ module.exports = {
   plugins : [
     new IndexHTMLPlugin('html', 'index.html'),
 	new ChunkManifestPlugin(),
-	new GulpInjectPlugin(['manifest.json', /^vendor\b/ 'index'])
+	new GulpInjectPlugin('html', ['manifest.json', /^vendor(\.\w+)$/ 'index'])
   ]
 }
 ```
@@ -107,15 +108,11 @@ Note that `options.quiet` is asserted by default. This prevents Gulp Inject from
 
 ### Regular Expressions (Bundle Splitting)
 
-Sure we could automaticatlly detect the files omitted in your compile and pass them to Gulp Inject. However we would not be able to determine the correct order.
+Sure we could automatically detect the files omitted in your compile and pass them to Gulp Inject. However we would not be able to determine the correct order.
 
-Chunk order is important, and it may even be that certain chunks should only be included in certain `html` files. For this reason we do not automatically detect and the `filesOrChunks` list is **explicit**.
+Chunk order is important, and it may even be that certain chunks should only be included in certain `html` files. For this reason we do not automatically detect and the `assetsOrChunks` list is **explicit**.
 
-But your code may define arbitary split points and you wont't want this to be coupled with the `filesOrChunks` list in your configuration. We can remedy this by using one or more `Regular Expression` elements in the `filesOrChunks` list. The limitation being you must [name chunks](https://webpack.github.io/docs/code-splitting.html#named-chunks) in order to write a meaningful expression.
-
-Where a `RegularExpression` element is encountered it is evaluated against the list of chunks (**not** filenames) that:
-* have not yet been matched, and;
-* are not matched by explicit strings that follow
+But your code may define arbitrary split points and you wont't want this to be coupled with the `assetsOrChunks` list in your configuration. We can remedy this by using one or more `Regular Expression` elements in the `assetsOrChunks` list. The limitation being you must [name chunks](https://webpack.github.io/docs/code-splitting.html#named-chunks) in order to write a meaningful expression.
 
 Here is an example for a simple `vendor.js`, split using common-js syntax to split chunk `vendor` into chunks `vendor.jquery`, `vendor.angular` and `vendor` (rest).
 
@@ -131,7 +128,7 @@ require.ensure([
 }, 'vendor.jquery');
 ```
 
-The order in which the `vendor*` chunks are injected does not matter because `ensure()` determines the execution order. Therefore we can group them all together with the single expression `/^vendor\b/` as shown in the example configuration above.
+The order in which the `vendor*` chunks are injected does not matter because `ensure()` determines the execution order. Therefore we can group them all together with the single expression `/^vendor(\.\w+)$/` as shown in the example configuration above.
 
 ### Chunk Manifest
 
