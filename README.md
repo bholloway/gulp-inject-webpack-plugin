@@ -10,7 +10,7 @@ Gulp has an excellect HTML composer called [**Gulp Inject**](https://www.npmjs.c
 
 If you have existing projects that you are migrating to Webpack it is desirable for these features to work immediately, with the **Webpack CLI**.
 
-This plugin wraps gulp-inject so that you can use **Gulp Inject** without running Gulp. It has a dependency on the **Vinyl file-system** used in Gulp but not on **Gulp** itself.
+This plugin wraps Gulp Inject so that you can use it without running Gulp. It has a dependency on the **Vinyl File System** used in Gulp but not on **Gulp** itself.
 
 This makes the plugin somewhat of a frankenstein, however the excellent implementation of **Gulp Inject** makes it compelling nonetheless. Over time I am sure we can find a more elegant solution for html injection in Webpack.
 
