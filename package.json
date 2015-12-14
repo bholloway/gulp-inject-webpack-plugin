@@ -22,6 +22,7 @@
   "homepage": "https://github.com/bholloway/gulp-inject-webpack-plugin",
   "dependencies": {
     "gulp-inject": "^3.0.0",
+    "lodash.assign": "^3.2.0",
     "vinyl-fs": "^2.2.1"
   }
 }
