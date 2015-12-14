@@ -27,7 +27,7 @@ new GulpInjectPlugin(filesOrChunks, options)
 ```
 
 Where:
-* `filesOrChunks` is a `string` or `Array.<string>` of chunk names and/or files names relative to `output.path`.
+* `filesOrChunks` is a `string|RegExp` or `Array.<string|RegExp>` of chunk names and/or files names relative to `output.path`.
 * `options` is an optional hash `object` of options per the [Gulp Inject API](https://www.npmjs.com/package/gulp-inject#api).
 
 In full this would look like the following:
@@ -40,8 +40,9 @@ var IndexHTMLPlugin     = require('indexhtml-webpack-plugin'),
 module.exports = {
   context : __dirname,
   entry   : {
-    html : './src/index.html',
-	index: './src/index.js'
+    html  : './src/index.html',
+	vendor: './src/vendor.js',
+	index : './src/index.js'
   },
   output  : {
     path                                 : './build',
@@ -60,16 +61,18 @@ module.exports = {
   plugins : [
     new IndexHTMLPlugin('html', 'index.html'),
 	new ChunkManifestPlugin(),
-	new GulpInjectPlugin(['manifest.json', 'index'])
+	new GulpInjectPlugin(['manifest.json', /^vendor\b/ 'index'])
   ]
 }
 ```
 
 The `output` options should be configured to your own taste, but it is a good idea to use a `chunkhash` for [long term caching](https://medium.com/@okonetchnikov/long-term-caching-of-static-assets-with-webpack-1ecb139adb95).
 
-Note the usage of `IndexHTMLPlugin`. This allows you to add assets such as `favicon.ico` and such that they are processed by Webpack.
+Note the usage of `IndexHTMLPlugin`. This allows you to add assets such as `favicon.ico` to your HTML such that they are processed by Webpack.
 
 Note the usage of `ChunkManifestPlugin`. This is important for [long term caching](https://medium.com/@okonetchnikov/long-term-caching-of-static-assets-with-webpack-1ecb139adb95) and will produce a `manifest.json` that should be injected as the first item.
+
+Note the usage of a Regular Expression for the `vendor` chunk. This will allow you to do **bundle splitting** as discussed below.
 
 ### Source file
 
@@ -102,19 +105,33 @@ Where the optional `options` hash is specified it is passed to Gulp Inject.
 
 Note that `options.quiet` is asserted by default. This prevents Gulp Inject from creating log output in the Gulp Utils format. However you may find this option useful for debugging problems.
 
-### Regular Expressions
+### Regular Expressions (Bundle Splitting)
 
 Sure we could automaticatlly detect the files omitted in your compile and pass them to Gulp Inject. However we would not be able to determine the correct order.
 
-Chunk order is important, and [code splitting](https://webpack.github.io/docs/code-splitting.html) can make correct order even less certain. Moreover it may be that certain chunks should only be included in certain `html` files. For this reason we do not automatically detect and the `filesOrChunks` list is **explicit**.
+Chunk order is important, and it may even be that certain chunks should only be included in certain `html` files. For this reason we do not automatically detect and the `filesOrChunks` list is **explicit**.
 
-But your code may define arbitary split points and you wont't want this to be coupled with the `filesOrChunks` list in your configuration. We can somewhat remedy this by using one or more `Regular Expression` elements in the `filesOrChunks` list.
+But your code may define arbitary split points and you wont't want this to be coupled with the `filesOrChunks` list in your configuration. We can remedy this by using one or more `Regular Expression` elements in the `filesOrChunks` list. The limitation being you must [name chunks](https://webpack.github.io/docs/code-splitting.html#named-chunks) in order to write a meaningful expression.
 
 Where a `RegularExpression` element is encountered it is evaluated against the list of chunks (**not** filenames) that:
 * have not yet been matched, and;
 * are not matched by explicit strings that follow
 
-So long as you [name chunks](https://webpack.github.io/docs/code-splitting.html#named-chunks) in a well defined manner you should be able to inject them using a RegularExpression.
+Here is an example for a simple `vendor.js`, split using common-js syntax to split chunk `vendor` into chunks `vendor.jquery`, `vendor.angular` and `vendor` (rest).
+
+```javascript
+require.ensure([
+    'jquery',
+], function() {
+	require.ensure([
+		'angular',
+	], function() {
+		...
+	}, 'vendor.angular')
+}, 'vendor.jquery');
+```
+
+The order in which the `vendor*` chunks are injected does not matter because `ensure()` determines the execution order. Therefore we can group them all together with the single expression `/^vendor\b/` as shown in the example configuration above.
 
 ### Chunk Manifest
 
