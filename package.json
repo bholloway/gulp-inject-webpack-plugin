@@ -1,0 +1,26 @@
+{
+  "name": "gulp-inject-webpack-plugin",
+  "version": "0.0.1",
+  "description": "A Webpack plugin that wraps gulp-inject for use with the Webpack CLI",
+  "main": "index.js",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/bholloway/gulp-inject-webpack-plugin.git"
+  },
+  "keywords": [
+    "webpack",
+    "plugin",
+    "gulp-inject",
+    "html",
+    "inject"
+  ],
+  "author": "bholloway",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/bholloway/gulp-inject-webpack-plugin/issues"
+  },
+  "homepage": "https://github.com/bholloway/gulp-inject-webpack-plugin",
+  "dependencies": {
+
+  }
+}
