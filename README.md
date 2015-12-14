@@ -117,14 +117,14 @@ But your code may define arbitrary split points and you wont't want this to be c
 Here is an example for a simple `vendor.js`, split using common-js syntax to split chunk `vendor` into chunks `vendor.jquery`, `vendor.angular` and `vendor` (rest).
 
 ```javascript
-require.ensure([
-    'jquery',
-], function() {
-	require.ensure([
-		'angular',
-	], function() {
-		...
-	}, 'vendor.angular')
+require.ensure([], function() {
+    require('jquery');
+    require.ensure([], function() {
+        require('angular');
+        require.ensure([], function() {
+            ...
+        }, 'vendor.rest');
+    }, 'vendor.angular');
 }, 'vendor.jquery');
 ```
 
