@@ -48,6 +48,7 @@ module.exports = {
   output  : {
     path                                 : './build',
     filename                             : 'assets/[name].[chunkhash].js',
+    chunkFilename                        : 'assets/[name].[chunkhash].js',
     devtoolModuleFilenameTemplate        : '[absolute-resource-path]',
     devtoolFallbackModuleFilenameTemplate: '[absolute-resource-path]?[hash]'
   },
