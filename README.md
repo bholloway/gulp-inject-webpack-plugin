@@ -63,7 +63,7 @@ module.exports = {
   plugins : [
     new IndexHTMLPlugin('html', 'index.html'),
 	new ChunkManifestPlugin(),
-	new GulpInjectPlugin('html', ['manifest.json', /^vendor(\.\w+)?$/ 'index'])
+	new GulpInjectPlugin('html', ['manifest.json', 'vendor', /^vendor\./, 'index'])
   ]
 }
 ```
@@ -115,7 +115,7 @@ Chunk order is important, and it may even be that certain chunks should only be 
 
 But your code may define arbitrary split points and you wont't want this to be coupled with the `assetsOrChunks` list in your configuration. We can remedy this by using one or more `Regular Expression` elements in the `assetsOrChunks` list. The limitation being you must [name chunks](https://webpack.github.io/docs/code-splitting.html#named-chunks) in order to write a meaningful expression.
 
-Here is an example for a simple `vendor.js`, split using common-js syntax to split chunk `vendor` into chunks `vendor.jquery`, `vendor.angular` and `vendor` (rest).
+Here is an example for a simple `vendor.js`, split using common-js syntax to split chunk `vendor` into chunks `vendor` (empty), `vendor.jquery`, `vendor.angular` and `vendor` (rest).
 
 ```javascript
 require.ensure([], function() {
@@ -129,7 +129,7 @@ require.ensure([], function() {
 }, 'vendor.jquery');
 ```
 
-The order in which the `vendor*` chunks are injected does not matter because `ensure()` determines the execution order. Therefore we can group them all together with the single expression `/^vendor(\.\w+)?$/` as shown in the example configuration above.
+The otherwise empty `vendor` chunk will be the **entry** chunk and will contain the Webpack prelude. Therefore it needs to come first. The order in which the remaining `vendor.*` chunks are injected does not matter because `require.ensure()` determines the execution order. Therefore we can group them all together with the single expression `/^vendor\./`. All of this is shown in the example configuration above.
 
 ### Chunk Manifest
 
