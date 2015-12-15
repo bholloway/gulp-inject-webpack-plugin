@@ -150,7 +150,7 @@ module.exports = {
 	}),
 	new GulpInjectPlugin('index'),
 	new GulpInjectPlugin('foo.json', {
-	  transform: GulpInjectPlugin.transforms.json.withManifestVariableName('bar')
+	  transform: GulpInjectPlugin.transform.html.json.withManifestVariableName('bar')
 	})
   ]
 }
