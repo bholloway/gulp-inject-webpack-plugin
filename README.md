@@ -137,7 +137,7 @@ In addition to the [default transforms](https://github.com/klei/gulp-inject/blob
 
 Similar to Gulp Inject, all transforms are exported under the hash `GulpInjectPlugin.transform`.
 
-By default `GulpInjectPlugin.transform.json` expects the default manifest varaible name of `webpackManifest`. However you may change it by using a more explicit plugin configuration.
+By default `GulpInjectPlugin.transform.html.json` expects the default manifest variable name of `webpackManifest`. However you may change it by using a more explicit plugin configuration.
 
 ```javascript
 module.exports = {
