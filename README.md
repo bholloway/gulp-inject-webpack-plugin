@@ -63,7 +63,7 @@ module.exports = {
   plugins : [
     new IndexHTMLPlugin('html', 'index.html'),
 	new ChunkManifestPlugin(),
-	new GulpInjectPlugin('html', ['manifest.json', /^vendor(\.\w+)$/ 'index'])
+	new GulpInjectPlugin('html', ['manifest.json', /^vendor(\.\w+)?$/ 'index'])
   ]
 }
 ```
@@ -129,7 +129,7 @@ require.ensure([], function() {
 }, 'vendor.jquery');
 ```
 
-The order in which the `vendor*` chunks are injected does not matter because `ensure()` determines the execution order. Therefore we can group them all together with the single expression `/^vendor(\.\w+)$/` as shown in the example configuration above.
+The order in which the `vendor*` chunks are injected does not matter because `ensure()` determines the execution order. Therefore we can group them all together with the single expression `/^vendor(\.\w+)?$/` as shown in the example configuration above.
 
 ### Chunk Manifest
 
