@@ -1,6 +1,6 @@
 {
   "name": "gulp-inject-webpack-plugin",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "description": "A Webpack plugin that wraps gulp-inject for use with the Webpack CLI",
   "main": "index.js",
   "repository": {
